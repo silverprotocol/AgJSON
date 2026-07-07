@@ -89,7 +89,7 @@ npm install @silverprotocol/core @silverprotocol/claude-agent-sdk
 // framework as-is; AgJSON just normalizes what it emits.
 import { query } from "@anthropic-ai/claude-agent-sdk";
 import { createClaudeNormalizer } from "@silverprotocol/claude-agent-sdk";
-import { ingestAgEvents, Reducer } from "@silverprotocol/core";
+import { Reducer } from "@silverprotocol/core";
 
 // produce: native framework stream → framework-neutral AgJSON
 const n = createClaudeNormalizer();
@@ -98,9 +98,10 @@ for await (const native of query({ prompt: "call the echo tool" }))
   agEvents.push(...n.push(native));
 agEvents.push(...n.flush());
 
-// consume: AgJSON → the messages/turns object graph your UI renders
+// consume: fold the AgJSON events into the messages/turns object graph your UI
+// renders. (Receiving AgJSON over the wire? Validate it first with ingestAgEvents().)
 const reducer = new Reducer();
-for (const ev of ingestAgEvents(agEvents)) reducer.push(ev);
+for (const ev of agEvents) reducer.push(ev);
 const { messages, turns } = reducer.result();
 ```
 
@@ -118,7 +119,7 @@ const stream = await run(agent, "call the echo tool", { stream: true });
 for await (const native of stream) agEvents.push(...n.push(native));
 await stream.completed;               // let the run finish
 agEvents.push(...n.flush());
-// …then the same ingestAgEvents(agEvents) → Reducer as above.
+// …then the same `for (const ev of agEvents) reducer.push(ev)` as above.
 ```
 
 Google ADK (`@iqai/adk`):
@@ -139,7 +140,7 @@ for await (const native of runner.runAsync({
   newMessage: { parts: [{ text: "call the echo tool" }] },
 })) agEvents.push(...n.push(native));
 agEvents.push(...n.flush());
-// …then the same ingestAgEvents(agEvents) → Reducer as above.
+// …then the same `for (const ev of agEvents) reducer.push(ev)` as above.
 ```
 
 ## The spec
