@@ -80,17 +80,22 @@ single fat message from Claude, a stream of deltas from OpenAI — converging on
 
 ```bash
 npm install @silverprotocol/core @silverprotocol/claude-agent-sdk
-# or @silverprotocol/openai-agents / @silverprotocol/google-adk
+# ...plus your framework's own SDK, e.g. @anthropic-ai/claude-agent-sdk
+# (OpenAI / ADK: @silverprotocol/openai-agents · @silverprotocol/google-adk)
 ```
 
 ```ts
+// `query` is the Claude Agent SDK's own streaming call — you keep using your
+// framework as-is; AgJSON just normalizes what it emits.
+import { query } from "@anthropic-ai/claude-agent-sdk";
 import { createClaudeNormalizer } from "@silverprotocol/claude-agent-sdk";
 import { ingestAgEvents, Reducer } from "@silverprotocol/core";
 
 // produce: native framework stream → framework-neutral AgJSON
 const n = createClaudeNormalizer();
 const agEvents = [];
-for await (const native of claudeStream) agEvents.push(...n.push(native));
+for await (const native of query({ prompt: "call the echo tool" }))
+  agEvents.push(...n.push(native));
 agEvents.push(...n.flush());
 
 // consume: AgJSON → the messages/turns object graph your UI renders
@@ -116,7 +121,7 @@ all you need.
 | TypeScript | `@silverprotocol/core`, `@silverprotocol/claude-agent-sdk`, `@silverprotocol/openai-agents`, `@silverprotocol/google-adk` | [silverprotocol/typescript-sdk](https://github.com/silverprotocol/typescript-sdk) | Shipped |
 
 More languages land the same way. Want a normalizer for your framework or language?
-[Open an issue](https://github.com/silverprotocol/typescript-sdk/issues) — normalizers
+[Open an issue](https://github.com/silverprotocol/AgJSON/issues) — normalizers
 are community-contributable.
 
 ## Contributing
