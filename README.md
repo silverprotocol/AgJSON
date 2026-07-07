@@ -28,6 +28,20 @@ event stream into one typed, versioned, forward-compatible shape — so a client
 written against AgJSON works with every framework a normalizer exists for, today and
 after the next SDK release.
 
+```mermaid
+flowchart LR
+    subgraph FW [Agent frameworks]
+        direction TB
+        F1[Claude Agent SDK]
+        F2[OpenAI Agents SDK]
+        F3[Google ADK]
+        F4["… + more"]
+    end
+    FW -->|normalize| SP([Silver Protocol])
+    SP --> AG[[AgJSON]]
+    AG -->|"one shape, any framework"| C[Your client]
+```
+
 ## Two SDKs, one event vocabulary
 
 The same “call the echo tool” interaction, as each framework actually emits it — a
