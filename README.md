@@ -81,7 +81,8 @@ single fat message from Claude, a stream of deltas from OpenAI — converging on
 ```bash
 npm install @silverprotocol/core @silverprotocol/claude-agent-sdk
 # ...plus your framework's own SDK, e.g. @anthropic-ai/claude-agent-sdk
-# (OpenAI / ADK: @silverprotocol/openai-agents · @silverprotocol/google-adk)
+# (OpenAI / ADK / Vercel: @silverprotocol/openai-agents ·
+#  @silverprotocol/google-adk · @silverprotocol/vercel-ai)
 ```
 
 ```ts
@@ -142,6 +143,21 @@ agEvents.push(...n.flush());
 // …then the same `for (const ev of agEvents) reducer.push(ev)` as above.
 ```
 
+Vercel AI SDK ([`ai`](https://github.com/vercel/ai)):
+
+```ts
+import { streamText } from "ai";
+import { openai } from "@ai-sdk/openai";
+import { createVercelNormalizer } from "@silverprotocol/vercel-ai";
+
+const result = streamText({ model: openai("gpt-5.6"), tools, prompt: "call the echo tool" });
+const n = createVercelNormalizer();
+const agEvents = [];
+for await (const native of result.fullStream) agEvents.push(...n.push(native));
+agEvents.push(...n.flush());
+// …then the same `for (const ev of agEvents) reducer.push(ev)` as above.
+```
+
 ## The spec
 
 The normative AgJSON v1 specification lives here in **[`SPEC.md`](./SPEC.md)** and is
@@ -156,7 +172,7 @@ all you need.
 
 | Language | Packages | Repository | Status |
 | --- | --- | --- | --- |
-| TypeScript | `@silverprotocol/core`, `@silverprotocol/claude-agent-sdk`, `@silverprotocol/openai-agents`, `@silverprotocol/google-adk` | [silverprotocol/typescript-sdk](https://github.com/silverprotocol/typescript-sdk) | Shipped |
+| TypeScript | `@silverprotocol/core`, `@silverprotocol/claude-agent-sdk`, `@silverprotocol/openai-agents`, `@silverprotocol/google-adk`, `@silverprotocol/vercel-ai` | [silverprotocol/typescript-sdk](https://github.com/silverprotocol/typescript-sdk) | Shipped |
 
 More languages land the same way. Want a normalizer for your framework or language?
 [Open an issue](https://github.com/silverprotocol/AgJSON/issues) — normalizers
