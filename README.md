@@ -129,7 +129,7 @@ Google ADK (official [`@google/adk`](https://github.com/google/adk-js)):
 import { LlmAgent, InMemoryRunner } from "@google/adk";
 import { createAdkNormalizer } from "@silverprotocol/google-adk";
 
-const agent = new LlmAgent({ name: "assistant", model: "gemini-3.5-flash", instruction: "Use the echo tool." });
+const agent = new LlmAgent({ name: "assistant", model: "gemini-3.6-flash", instruction: "Use the echo tool." });
 const runner = new InMemoryRunner({ agent });
 const session = await runner.sessionService.createSession({ appName: runner.appName, userId: "user-1" });
 const n = createAdkNormalizer();
