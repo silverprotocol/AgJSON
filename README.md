@@ -137,7 +137,7 @@ const agEvents = [];
 for await (const native of runner.runAsync({
   userId: session.userId,
   sessionId: session.id,
-  newMessage: { role: "user", parts: [{ text: "call the echo tool" }] }, // role is REQUIRED: adk-js drops role-less turns from tool-loop replays (400)
+  newMessage: { role: "user", parts: [{ text: "call the echo tool" }] }, // role required on adk ≤1.3.0 (role-less turns 400'd in tool-loop replays); defaulted since 1.4.0
 })) agEvents.push(...n.push(native));
 agEvents.push(...n.flush());
 // …then the same `for (const ev of agEvents) reducer.push(ev)` as above.
