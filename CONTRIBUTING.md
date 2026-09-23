@@ -20,7 +20,8 @@ Thanks for your interest in AgJSON.
    evidence-backed representation of a real framework behaviour are the most
    likely to land. New surface for its own sake is not.
 3. The wire format is **additive-minor**: unknown event types and fields are
-   always safe to ignore, so v1.0 clients keep working as the spec grows.
+   safe to ignore, but a new value of a closed set is not additive (§12 lists
+   what is), so v1 clients keep working as the spec grows.
 
 ## Adding a normalizer for a new framework or language
 
