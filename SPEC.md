@@ -8,7 +8,7 @@
 >
 > This revision streamlines AgJSON to a focused transport for normalized framework I/O: agent-UI output is carried via **MCP Apps + A2UI**. These two are the respected external UI/tool specs; AgJSON defines no component schema and no render layer of its own. A2UI is the first-class agent-UI-OUTPUT path: when an agent draws components by streaming, it emits A2UI, carried Layer-A-opaquely in AgJSON output (`resource` blocks for MCP Apps HTML surfaces + `ui.*` surface RPC + the `ui.surface.*` / `ui.data-model` surface-stream events for A2UI). Two general-purpose constructs (`state.snapshot`/`state.delta` and `hitl.ask.metadata`/`AgPausedAsk.metadata`) are anchored on LangGraph (`values`/`updates` stream modes; `interrupt(value: Any)`). This revision also **un-merges the surface-interaction layer**: the old single merged `AgUiAction` is replaced by a shared `AgSurfaceEnvelope` + five per-spec-faithful constructs (the `AgSurfaceInteraction` union), so each external UI spec's client→server message round-trips with its own field names instead of a lossy merge. It is still **Draft** — it may change before the v1 freeze.
 >
-> **Provenance:** designed from a deep cross-framework survey (Anthropic Messages API + Agent SDK, OpenAI Responses + Agents SDK, Google Gemini/ADK/A2A v0.3.0/A2UI v1.0, Vercel AI SDK v5/v6, LangChain/LangGraph v1, Pydantic AI v2, MCP + MCP Apps 2026-01-26) and adversarially gap-checked against primary sources. Rationale + per-framework mapping derive from an internal design record; a published rationale document accompanies the first public release.
+> **Provenance:** designed from a deep cross-framework survey (Anthropic Messages API + Agent SDK, OpenAI Responses + Agents SDK, Google Gemini/ADK/A2A v0.3.0/A2UI v1.0, Vercel AI SDK v5/v6, LangChain/LangGraph v1, Pydantic AI v2, MCP 2026-07-28 + MCP Apps 2026-01-26) and adversarially gap-checked against primary sources. Rationale + per-framework mapping derive from an internal design record; a published rationale document accompanies the first public release.
 
 ## 0. Notation, naming system & invariants
 
@@ -899,7 +899,7 @@ The single `hitl.*` family **replaces both** the old `elicitation.request` and t
 
 **`kind:"url"` (consent-only).** URL-mode elicitation (`{kind:"url", url, message?}`) directs the user out-of-band; data does NOT pass through the client. A `status:"resolved"` here means **consent-to-open only**, NOT that the interaction completed — completion is carried later by re-presenting `requestState` (ties to MRTR). `auth` stays the OAuth-specialized subtype; `url` covers generic out-of-band consent (API-key entry, payment).
 
-**MCP MRTR continuation.** The 2026-01-26 MCP spec models server-initiated requests as Multi Round-Trip Requests: a paused tool call returns `resultType:"input_required"` with `inputRequests` (keyed map) + a `requestState` the client MUST echo byte-identical and MUST NOT inspect. AgJSON carries `requestState` (and the `inputKey` map key) on `hitl.ask` and back on `AgHitlAnswer`; resume is a fresh `AgInput` carrying the echoed `requestState`. `requestState` is DISTINCT from `token` (anti-forgery).
+**MCP MRTR continuation.** MCP revision 2026-07-28 (§14 [MCP]; SEP-2322) models server-initiated requests as Multi Round-Trip Requests: a paused tool call returns `resultType:"input_required"` with `inputRequests` (keyed map) and/or a `requestState` (at least one is present); a `requestState`, when present, the client MUST echo byte-identical and MUST NOT inspect. AgJSON carries `requestState` (and the `inputKey` map key) on `hitl.ask` and back on `AgHitlAnswer`; resume is a fresh `AgInput` carrying the echoed `requestState`. `requestState` is DISTINCT from `token` (anti-forgery).
 
 **`inputKey` (singular) vs `inputKeys` (plural) — deliberately distinct (§0.6).** These name two different things and are NOT a one-word-per-concept violation: `inputKey` (singular, on `hitl.ask` / `AgPausedAsk`, A9) is the **selected** map key — the single `inputRequests` entry this particular ask resolves, echoed in its answer. `inputKeys` (plural array, inside `pendingInput` on the `tool-result` block / tool-result input / `tool.done`, A57) is the **set of still-pending** request keys advertised on a paused `outcome:"input_required"` result. One selected key per ask vs the full pending-key set on the result — distinct concepts, distinct words.
 
@@ -1078,7 +1078,8 @@ Surface payloads are **model-controlled executable content**. The Layer-B render
 
 Normative external surfaces are pinned to the revisions below; "verbatim" clauses in this spec are relative to these pins.
 
-- **[MCP + MCP Apps]** Model Context Protocol, revision **2026-01-26**, incl. the Apps extension — https://modelcontextprotocol.io/specification/2026-01-26
+- **[MCP]** Model Context Protocol, revision **2026-07-28** (git tag `2026-07-28`, commit `5f5440bb`) — https://modelcontextprotocol.io/specification/2026-07-28
+- **[MCP Apps]** MCP Apps extension (SEP-1865, `io.modelcontextprotocol/ui`), **Stable 2026-01-26** — https://github.com/modelcontextprotocol/ext-apps/blob/298e884/specification/2026-01-26/apps.mdx
 - **[A2UI]** A2UI **v1.0** — https://github.com/google/A2UI (spec + `client_to_server.json` schema at the v1.0 tag)
 - **[A2A]** Agent2Agent protocol **v0.3.0** — https://a2a-protocol.org/v0.3.0/specification/
 - **[OpenAI Apps]** OpenAI Apps SDK reference, snapshot **2026-06** — https://developers.openai.com/apps-sdk (DisplayMode, `window.openai` surface; unversioned upstream — pinned by snapshot date)
@@ -1088,5 +1089,7 @@ Normative external surfaces are pinned to the revisions below; "verbatim" clause
 - **[RFC 6902]** JSON Patch (`state.delta`, `memory.write.patch`).
 - **[RFC 8785]** JSON Canonicalization Scheme (non-normative byte-comparison annex, §5.0 INV-FOLD).
 - **[RFC 3552]** security-considerations guidance (§13).
+
+_(The [MCP] and [MCP Apps] pins fix the vocabulary this spec restates; they do not select a negotiated MCP protocol generation. AgJSON carries no MCP handshake or negotiation field; a producer whose MCP client negotiates an earlier revision (2025-11-25 or before) emits only what that revision defines, so fields new in 2026-07-28, such as the MRTR `requestState`, are simply absent. The 2025-11-25 URL-mode completion signal (`elicitationId`, `notifications/elicitation/complete`) has no AgJSON carrier; a producer that keeps it uses `ext.<vendor>.*` or `providerMetadata` (§12). MCP Apps is versioned independently of core; its `2026-01-26` is also the Apps `ui/initialize` protocol version.)_
 
 _(Publish gate: every URL above must resolve at first publish; the OpenAI Apps snapshot date is re-verified each release.)_
