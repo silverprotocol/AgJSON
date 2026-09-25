@@ -5,7 +5,7 @@
 <h1 align="center">Silver Protocol · AgJSON</h1>
 
 <p align="center">
-  <b>The open, neutral, typed transport for normalized agent-framework I/O.</b><br/>
+  <b>The open, typed transport for normalized agent-framework I/O, unopinionated about storage and rendering.</b><br/>
   Write your client once, then plug in any agent framework it has a normalizer for.
 </p>
 
