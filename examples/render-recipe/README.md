@@ -43,6 +43,6 @@ instead — same code, same output shape, a different framework.
 
 > Why a recipe and not a package? AgJSON's whole design is to own the wire
 > format and nothing above it. Shipping a UI would make it an interaction
-> framework; keeping rendering yours is what keeps it a neutral transport you
-> can drop into any stack. If a community client SDK would help you, that's
+> framework; keeping rendering yours is what keeps it a transport — unopinionated
+> about storage and rendering — that you can drop into any stack. If a community client SDK would help you, that's
 > welcome — [open an issue](https://github.com/silverprotocol/AgJSON/issues).
