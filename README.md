@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://silverprotocol.io/AgJSON"><img src="https://img.shields.io/badge/spec-1.0.0--draft.4-6ee7ff"></a>
+  <a href="https://silverprotocol.io/AgJSON"><img src="https://img.shields.io/badge/spec-1.0.0--draft.5-6ee7ff"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue"></a>
   <a href="https://www.npmjs.com/package/@silverprotocol/core"><img src="https://img.shields.io/npm/v/%40silverprotocol%2Fcore?label=%40silverprotocol%2Fcore&color=0a7"></a>
   <a href="https://silverprotocol.io"><img src="https://img.shields.io/badge/site-silverprotocol.io-111"></a>
@@ -164,7 +164,7 @@ agEvents.push(...n.flush());
 
 The normative AgJSON v1 specification lives here in **[`SPEC.md`](./SPEC.md)** and is
 rendered at **[silverprotocol.io/AgJSON](https://silverprotocol.io/AgJSON)**.
-Wire version `1.0.0-draft.4` — **Draft**, stable enough to build on, and we want your
+Wire version `1.0.0-draft.5` — **Draft**, stable enough to build on, and we want your
 framework's edge cases before the v1 freeze.
 
 ## SDKs
