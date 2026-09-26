@@ -75,7 +75,8 @@ single fat message from Claude, a stream of deltas from OpenAI — converging on
   rendering is left to **MCP Apps** and **A2UI** — no reinvented component schema.
 - **Forward-compatible by rule.** Unknown event types and unknown fields are safe
   to ignore: an ignored event keeps its place in the stream and is reported, not
-  folded, and the lifecycle value sets are frozen within v1 (§12), so a v1 client
+  folded, the sets §12's table classes FROZEN stay frozen within v1, and a new
+  block type reaches only a client that declares support for it, so a v1 client
   keeps working as the spec grows.
 
 ## Get started

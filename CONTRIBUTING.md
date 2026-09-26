@@ -21,7 +21,8 @@ Thanks for your interest in AgJSON.
    likely to land. New surface for its own sake is not.
 3. The wire format is **additive-minor**: unknown event types and fields are
    safe to ignore, but a new value of a closed set is not additive (§12 lists
-   what is), so v1 clients keep working as the spec grows.
+   what is) and a new block type reaches only a client that declares support
+   for it, so v1 clients keep working as the spec grows.
 4. Corrections to published text are errata as SPEC.md §15 defines them; file one as a scoped line naming the sentence, the revision it corrects and why it changes no meaning.
 
 ## Adding a normalizer for a new framework or language
