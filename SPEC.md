@@ -388,7 +388,7 @@ type AgRole = "user" | "assistant" | "tool" | "system" | "notice";
 // ── Reasoning request knob (neutral; covers OpenAI o-series effort + Anthropic/Gemini budgets) ──
 interface AgReasoningConfig {
   mode: "enabled" | "disabled";
-    effort?: string;   // an open string (§12 table: OPEN STRING); documented values "minimal" | "low" | "medium" | "high" — neutral mapping; a provider may accept more
+  effort?: string;   // an open string (§12 table: OPEN STRING); documented values "minimal" | "low" | "medium" | "high" — neutral mapping; a provider may accept more
   budgetTokens?: number;                              // Anthropic/Gemini thinking budget
 }
 
