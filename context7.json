@@ -9,7 +9,7 @@
     "Producer side: create a per-framework normalizer (e.g. `createClaudeNormalizer()` from `@silverprotocol/claude-agent-sdk`), feed it each native event with `push(native)`, then call `flush()` at end-of-stream. The normalizer sits ON TOP of the framework's own SDK (e.g. `query()` from `@anthropic-ai/claude-agent-sdk`) — it does not replace it.",
     "Consumer side: use `ingestAgEvents()` to validate incoming wire objects, then a `Reducer` (or `reduce()`) to fold the `AgEvent` stream into `{ messages, turns, artifacts, memory }`. The same client code works regardless of which framework produced the stream.",
     "Packages: `@silverprotocol/core` (the AgJSON types + the normative `reduce()`), plus per-framework normalizers `@silverprotocol/claude-agent-sdk`, `@silverprotocol/openai-agents`, `@silverprotocol/google-adk`, and `@silverprotocol/vercel-ai` (Vercel AI SDK: feed `streamText`'s fullStream `TextStreamPart`s into `createVercelNormalizer()`).",
-    "The spec is Draft (wire version `1.0.0-draft.6`) and may still change before the v1 freeze.",
+    "The spec is Draft (wire version `1.0.0-draft.7`) and may still change before the v1 freeze.",
     "AgJSON composes with MCP (tools) and A2UI (rendering) rather than competing with them. It is a normalization layer, not an interaction framework like AG-UI — it owns nothing about shared state or rendering."
   ]
 }
